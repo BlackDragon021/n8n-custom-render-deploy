@@ -33,5 +33,5 @@ USER node
 # Expose le port standard de n8n
 EXPOSE 5678
 
-# Point d'entrée par défaut (hérite de l'image parent)
-CMD ["n8n", "start"]
+# Point d'entrée par défaut - utilise le chemin complet
+CMD ["node", "/usr/local/lib/node_modules/n8n/bin/n8n", "start"]
