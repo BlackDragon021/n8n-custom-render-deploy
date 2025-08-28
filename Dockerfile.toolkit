@@ -1,0 +1,34 @@
+# Dockerfile pour no-code-architects-toolkit
+FROM node:18-alpine
+
+# Installe les dépendances système nécessaires
+RUN apk add --no-cache \
+    git \
+    python3 \
+    make \
+    g++ \
+    ffmpeg \
+    curl
+
+# Crée le répertoire de travail
+WORKDIR /app
+
+# Clone ou copie le toolkit (remplacez par votre repo réel)
+# RUN git clone https://github.com/your-username/no-code-architects-toolkit.git .
+
+# Pour l'instant, crée une structure basique
+RUN mkdir -p src tools config
+RUN echo '{"name": "no-code-architects-toolkit", "version": "1.0.0"}' > package.json
+
+# Installe les dépendances npm si package.json existe
+RUN if [ -f package.json ]; then npm install; fi
+
+# Crée des scripts utilitaires de base
+RUN echo '#!/bin/sh\necho "No-code Architects Toolkit - Ready"' > /app/tools/init.sh
+RUN chmod +x /app/tools/init.sh
+
+# Expose un port pour les API du toolkit
+EXPOSE 3000
+
+# Point d'entrée
+CMD ["/app/tools/init.sh"]
