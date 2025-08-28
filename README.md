@@ -14,7 +14,18 @@ Cette configuration déploie n8n avec des fonctionnalités étendues :
 
 ## 📋 Instructions de déploiement
 
-### Étape 1 : Déploiement automatique
+### Étape 1 : Choisir votre version
+
+#### **Version Gratuite (recommandée pour débuter)**
+1. **Utilisez le fichier `render.yaml` par défaut**
+2. ⚠️ **Attention** : Pas de stockage persistant (données perdues au redémarrage)
+
+#### **Version avec Stockage Persistant**
+1. **Renommez `render.yaml` en `render-free.yaml`**
+2. **Renommez `render-paid.yaml` en `render.yaml`**
+3. 💰 **Coût** : ~$14/mois pour les services web + base de données
+
+### Étape 2 : Déploiement automatique
 1. **Cliquez sur le bouton "Deploy to Render" ci-dessus**
 2. Connectez votre compte GitHub si nécessaire
 3. Choisissez un nom de blueprint (ex: "n8n-custom")
@@ -58,11 +69,20 @@ Cette configuration déploie n8n avec des fonctionnalités étendues :
 - Personnalisation des voix
 - Intégration dans les workflows n8n
 
-## 💰 Coûts
+## 💰 Coûts et limitations
 
+### **Version Gratuite (render.yaml)**
 - **Gratuit pendant 90 jours**
 - Après : **7$/mois** pour la base de données PostgreSQL
-- Services web restent gratuits (avec limitations)
+- ⚠️ **LIMITATION** : Pas de stockage persistant
+- Les données n8n et fichiers MinIO sont perdus au redémarrage
+- Idéal pour : Tests, développement, workflows simples
+
+### **Version avec Stockage Persistant (render-paid.yaml)**
+- **$14/mois** : 2 services web ($7 chacun) + base de données ($7)
+- ✅ Stockage persistant pour n8n et MinIO
+- Données conservées entre les redémarrages
+- Idéal pour : Production, workflows complexes, stockage de fichiers
 
 ## 🔧 Variables d'environnement
 
