@@ -8,10 +8,7 @@ services:
     branch: main
     numInstances: 1
     healthCheckPath: /healthz
-    disk:
-      name: n8n-storage
-      mountPath: /home/node/.n8n
-      sizeGB: 1
+    # Note: Pas de stockage persistant sur plan gratuit - données perdues au redémarrage
     envVars:
       # Configuration base de données PostgreSQL
       - key: DB_TYPE
@@ -83,10 +80,7 @@ services:
     plan: free
     branch: main
     dockerfilePath: ./Dockerfile.minio
-    disk:
-      name: minio-storage
-      mountPath: /data
-      sizeGB: 1
+    # Note: Pas de stockage persistant sur plan gratuit
     envVars:
       - key: MINIO_ROOT_USER
         value: n8n-minio-key
