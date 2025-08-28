@@ -1,0 +1,103 @@
+services:
+  # Service n8n principal avec image personnalisée
+  - type: web
+    name: n8n-custom
+    env: docker
+    region: frankfurt
+    plan: free
+    branch: main
+    numInstances: 1
+    healthCheckPath: /healthz
+    disk:
+      name: n8n-storage
+      mountPath: /home/node/.n8n
+      sizeGB: 1
+    envVars:
+      # Configuration base de données PostgreSQL
+      - key: DB_TYPE
+        value: postgresdb
+      - key: DB_POSTGRESDB_HOST
+        fromDatabase:
+          name: n8nDB
+          property: host
+      - key: DB_POSTGRESDB_DATABASE
+        fromDatabase:
+          name: n8nDB
+          property: database
+      - key: DB_POSTGRESDB_PORT
+        fromDatabase:
+          name: n8nDB
+          property: port
+      - key: DB_POSTGRESDB_USER
+        fromDatabase:
+          name: n8nDB
+          property: user
+      - key: DB_POSTGRESDB_PASSWORD
+        fromDatabase:
+          name: n8nDB
+          property: password
+      # Configuration n8n
+      - key: PORT
+        value: 5678
+      - key: N8N_LOG_LEVEL
+        value: info
+      - key: GENERIC_TIMEZONE
+        value: Europe/Paris
+      - key: TZ
+        value: Europe/Paris
+      - key: N8N_DEFAULT_LOCALE
+        value: fr
+      - key: N8N_ENCRYPTION_KEY
+        generateValue: true
+      # Configuration MinIO (S3 compatible)
+      - key: MINIO_ENDPOINT
+        fromService:
+          name: minio
+          type: pserv
+          property: hostport
+      - key: MINIO_ACCESS_KEY
+        value: n8n-minio-key
+      - key: MINIO_SECRET_KEY
+        generateValue: true
+      # Variables pour FFmpeg et outils audio/vidéo
+      - key: FFMPEG_PATH
+        value: /usr/bin/ffmpeg
+      - key: ENABLE_AUDIO_PROCESSING
+        value: "true"
+      # Variables pour Kokoro TTS
+      - key: KOKORO_TTS_ENABLED
+        value: "true"
+      # Variables pour No-code Architects Toolkit
+      - key: TOOLKIT_ENABLED
+        value: "true"
+      - key: TOOLKIT_PORT
+        value: "3001"
+      - key: TOOLKIT_PATH
+        value: "/usr/local/bin/no-code-tools"
+
+  # Service MinIO pour stockage S3-compatible
+  - type: pserv
+    name: minio
+    env: docker
+    region: frankfurt
+    plan: free
+    branch: main
+    dockerfilePath: ./Dockerfile.minio
+    disk:
+      name: minio-storage
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: MINIO_ROOT_USER
+        value: n8n-minio-key
+      - key: MINIO_ROOT_PASSWORD
+        generateValue: true
+      - key: MINIO_BROWSER
+        value: "on"
+    dockerCommand: 'minio server /data --console-address ":9001"'
+
+# Base de données PostgreSQL pour n8n
+databases:
+  - name: n8nDB
+    region: frankfurt
+    plan: free
